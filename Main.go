@@ -29,8 +29,7 @@ func run() {
 	}
 }
 
-
-func init(){
+func init() {
 	streetMap = NewMap(30)
 	streetMap.addCar()
 	//TODO: Spawn cars
@@ -38,14 +37,13 @@ func init(){
 
 func update() {
 	streetMap.renderMap()
-	//TODO: Move cars
+	streetMap.MoveCars()
 	streetMap.RenderCars()
 	//TODO: Check Obstacles
 	//TODO: Communication
 	//TODO: Warn
 	//TODO: Render Comm/Warning
 }
-
 
 func main() {
 	pixelgl.Run(run)

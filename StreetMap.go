@@ -68,7 +68,7 @@ func (m *StreetMap) MoveCars() {
 	for f := range m.cars {
 		m.cars[f].MoveCar()
 	}
-}
+} //
 
 func (m StreetMap) RenderCars() {
 	for i := range m.cars {

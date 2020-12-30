@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="64db7b7c-05bb-43ac-a710-e1225fcabb5f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreetMap.go" beforeDir="false" afterPath="$PROJECT_DIR$/StreetMap.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +68,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Car -&gt; Tile relationship" />
     <MESSAGE value="Car Movement" />
-    <option name="LAST_COMMIT_MESSAGE" value="Car Movement" />
+    <MESSAGE value="gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="gitignore" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>

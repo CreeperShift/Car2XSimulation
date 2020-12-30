@@ -3,11 +3,14 @@ package main
 import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/faiface/pixel/text"
 	"golang.org/x/image/colornames"
+	"golang.org/x/image/font/basicfont"
 )
 
 var mainWindow *pixelgl.Window
 var streetMap *StreetMap
+var basicAtlas *text.Atlas
 
 func run() {
 	cfg := pixelgl.WindowConfig{
@@ -20,19 +23,21 @@ func run() {
 		panic(err)
 	}
 	mainWindow = win
+	basicAtlas = text.NewAtlas(basicfont.Face7x13, text.ASCII)
 
 	win.Clear(colornames.Skyblue)
 
 	for !win.Closed() {
 		win.Update()
+		win.Clear(colornames.Skyblue)
 		update()
 	}
 }
 
 func init() {
-	streetMap = NewMap(30)
+	streetMap = NewMap(30, true)
 	streetMap.addCar()
-	//TODO: Spawn cars
+	//TODO: spawn obstacle (1 or more)
 }
 
 func update() {

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/text"
 )
 
 type (
@@ -21,6 +23,9 @@ type (
 )
 
 func (m *StreetMap) addCar() {
+
+	//TODO: proper car spawning
+
 	car := Car{x: 15, y: 15, id: "car1", sensorActive: false, direction: up}
 	m.cars = append(m.cars, car)
 }
@@ -33,7 +38,7 @@ func (m StreetMap) renderMap() {
 	}
 }
 
-func NewMap(size int) *StreetMap {
+func NewMap(size int, test bool) *StreetMap {
 
 	s := StreetMap{
 		size: size,
@@ -42,17 +47,43 @@ func NewMap(size int) *StreetMap {
 	for i := range s.tiles {
 		s.tiles[i] = make([]Tile, size)
 	}
+
+	fmt.Println(s.tiles)
+
 	for i := range s.tiles {
 		for f := range s.tiles[i] {
 			var x, y float64
 			x = 15 + float64(i)*30
 			y = 15 + float64(f)*30
 
-			s.tiles[i][f] = Tile{x, y, 1}
+			s.tiles[i][f] = Tile{x, y, 0}
 		}
 	}
+	fmt.Println(s.tiles)
+	if test {
+		for x := range s.tiles {
+			for y := range s.tiles[x] {
 
+				if x == 1 || x == 29 {
+					if y >= 1 && y < 30 {
+						s.tiles[x][y].setType(1)
+					}
+				}
+
+				if y == 1 || y == 29 {
+					if x >= 1 && x < 30 {
+						s.tiles[x][y].setType(1)
+					}
+				}
+			}
+		}
+	}
+	fmt.Println(s.tiles)
 	return &s
+}
+
+func (tile *Tile) setType(i int) {
+	tile.tileType = i
 }
 
 func (tile Tile) drawTile() {
@@ -62,13 +93,16 @@ func (tile Tile) drawTile() {
 	mat = mat.Moved(pixel.V(tile.x, tile.y))
 
 	sprites[tile.tileType].Draw(mainWindow, mat)
+	basicTxt := text.New(pixel.V(tile.x, tile.y), basicAtlas)
+	fmt.Fprint(basicTxt, tile.x, " ", tile.y)
+	basicTxt.Draw(mainWindow, pixel.IM.Scaled(basicTxt.Orig, 0.9))
 }
 
 func (m *StreetMap) MoveCars() {
 	for f := range m.cars {
 		m.cars[f].MoveCar()
 	}
-} //
+}
 
 func (m StreetMap) RenderCars() {
 	for i := range m.cars {

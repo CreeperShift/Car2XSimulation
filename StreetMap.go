@@ -21,7 +21,7 @@ type (
 )
 
 func (m *StreetMap) addCar() {
-	car := Car{x: 400, y: 400, id: "car1", sensorActive: false}
+	car := Car{x: 15, y: 15, id: "car1", sensorActive: false}
 	m.cars = append(m.cars, car)
 }
 
@@ -56,18 +56,12 @@ func NewMap(size int) *StreetMap {
 }
 
 func (tile Tile) drawTile() {
-	tileEmpty := LoadAndSprite("assets/TileEmpty.png")
-	tileStreet := LoadAndSprite("assets/TileStreet.png")
+	sprites := [2]*pixel.Sprite{LoadAndSprite("assets/TileEmpty.png"), LoadAndSprite("assets/TileStreet.png")}
 
 	mat := pixel.IM
 	mat = mat.Moved(pixel.V(tile.x, tile.y))
 
-	switch tile.tileType {
-	case 1:
-		tileStreet.Draw(mainWindow, mat)
-	default:
-		tileEmpty.Draw(mainWindow, mat)
-	}
+	sprites[tile.tileType].Draw(mainWindow, mat)
 }
 
 func (m StreetMap) RenderCars() {

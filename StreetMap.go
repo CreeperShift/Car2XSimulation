@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/text"
+	"math/rand"
+	"time"
 )
 
 type (
@@ -26,8 +27,18 @@ func (m *StreetMap) addCar() {
 
 	//TODO: proper car spawning
 
-	car := Car{x: 15, y: 15, id: "car1", sensorActive: false, direction: up}
-	m.cars = append(m.cars, car)
+	count := 0
+
+	for x := range m.tiles {
+		for y := range m.tiles[x] {
+			if m.tiles[x][y].tileType == 1 && count < 10 {
+				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: up}
+				m.cars = append(m.cars, car)
+				count++
+			}
+		}
+	}
+
 }
 
 func (m StreetMap) renderMap() {
@@ -56,30 +67,41 @@ func NewMap(size int, test bool) *StreetMap {
 			x = 15 + float64(i)*30
 			y = 15 + float64(f)*30
 
-			s.tiles[i][f] = Tile{x, y, 0}
-		}
-	}
-	fmt.Println(s.tiles)
-	if test {
-		for x := range s.tiles {
-			for y := range s.tiles[x] {
-
-				if x == 1 || x == 29 {
-					if y >= 1 && y < 30 {
-						s.tiles[x][y].setType(1)
-					}
-				}
-
-				if y == 1 || y == 29 {
-					if x >= 1 && x < 30 {
-						s.tiles[x][y].setType(1)
-					}
-				}
-			}
+			s.tiles[i][f] = Tile{x: x, y: y}
 		}
 	}
 	fmt.Println(s.tiles)
 	return &s
+}
+
+func (m *StreetMap) addStreets() {
+
+	m.tiles = divideSlice(m.tiles, 2)
+}
+
+func divideSlice(slice [][]Tile, rec int) [][]Tile {
+	rand.Seed(time.Now().UnixNano())
+	maxX := rand.Intn(len(slice) - 1)
+	maxY := rand.Intn(len(slice) - 1)
+
+	for x := range slice {
+		for y := range slice[x] {
+
+			if x == maxX {
+				slice[x][y].setType(1)
+			}
+			if y == maxY {
+				slice[x][y].setType(1)
+			}
+		}
+	}
+
+	if rec > 0 {
+		rec--
+		divideSlice(slice[0:maxX][0:maxY], rec)
+	}
+
+	return slice
 }
 
 func (tile *Tile) setType(i int) {
@@ -93,9 +115,9 @@ func (tile Tile) drawTile() {
 	mat = mat.Moved(pixel.V(tile.x, tile.y))
 
 	sprites[tile.tileType].Draw(mainWindow, mat)
-	basicTxt := text.New(pixel.V(tile.x, tile.y), basicAtlas)
-	fmt.Fprint(basicTxt, tile.x, " ", tile.y)
-	basicTxt.Draw(mainWindow, pixel.IM.Scaled(basicTxt.Orig, 0.9))
+	/*		basicTxt := text.New(pixel.V(tile.x, tile.y), basicAtlas)
+			fmt.Fprintln(basicTxt, tile.x, " ", tile.y)
+			basicTxt.Draw(mainWindow, pixel.IM.Scaled(basicTxt.Orig, 0.5))*/
 }
 
 func (m *StreetMap) MoveCars() {

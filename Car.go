@@ -77,10 +77,27 @@ func (car *Car) MoveCar() {
 	}
 	if len(movePool) > 0 {
 		i := rand.Intn(len(movePool))
-		car.x = car.x + movePool[i].x
-		car.y = car.y + movePool[i].y
-		car.direction = movePool[i]
+		car.addDir(movePool[i])
+	} else {
+		switch {
+		case compareDir(car.direction, up):
+			car.addDir(down)
+		case compareDir(car.direction, down):
+			car.addDir(up)
+		case compareDir(car.direction, left):
+			car.addDir(right)
+		case compareDir(car.direction, right):
+			car.addDir(left)
+		}
 	}
+
+}
+
+func (car *Car) addDir(m Move) {
+
+	car.x = car.x + m.x
+	car.y = car.y + m.y
+	car.direction = m
 }
 
 func compareDir(a, b Move) bool {

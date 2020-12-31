@@ -24,18 +24,18 @@ func run() {
 	}
 	mainWindow = win
 	basicAtlas = text.NewAtlas(basicfont.Face7x13, text.ASCII)
-
+	Init()
 	win.Clear(colornames.Skyblue)
 
 	for !win.Closed() {
 		win.Update()
-		win.Clear(colornames.Skyblue)
 		update()
 	}
 }
 
-func init() {
+func Init() {
 	streetMap = NewMap(30, true)
+	streetMap.addStreets()
 	streetMap.addCar()
 	//TODO: spawn obstacle (1 or more)
 }

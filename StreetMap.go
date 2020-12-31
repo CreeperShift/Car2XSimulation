@@ -27,13 +27,18 @@ func (m *StreetMap) addCar() {
 
 	//TODO: proper car spawning
 
+	sprites := []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}
+
+	rand.Seed(time.Now().UnixNano())
 	count := 0
 
 	for x := range m.tiles {
 		for y := range m.tiles[x] {
 			if m.tiles[x][y].tileType == 1 && count < 10 {
-				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: up}
+				tex := rand.Intn(len(sprites))
+				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: up, sprite: sprites[tex]}
 				m.cars = append(m.cars, car)
+
 				count++
 			}
 		}

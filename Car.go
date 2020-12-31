@@ -27,14 +27,16 @@ type Car struct {
 	id           string
 	sensorActive bool
 	direction    Move
+	sprite       *pixel.Sprite
 }
 
 func (car Car) RenderCar() {
-	carSprite := LoadAndSprite("assets/carYellowSmall.png")
+
 	mat := pixel.IM
 	mat = mat.Moved(pixel.V(streetMap.tiles[car.x][car.y].x, streetMap.tiles[car.x][car.y].y))
 	mat = mat.Rotated(pixel.V(streetMap.tiles[car.x][car.y].x, streetMap.tiles[car.x][car.y].y), rotateDirection(car.direction))
-	carSprite.Draw(mainWindow, mat)
+
+	car.sprite.Draw(mainWindow, mat)
 }
 
 func (car *Car) MoveCar() {

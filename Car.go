@@ -16,6 +16,7 @@ type Car struct {
 	sensorActive bool
 	direction    Move
 	sprite       *pixel.Sprite
+	status       string
 }
 
 var CarSprites = []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}

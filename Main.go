@@ -5,6 +5,7 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
+	"strconv"
 	"time"
 )
 
@@ -50,8 +51,8 @@ func Init() {
 
 	streetMap = NewMap(30, 31)
 	streetMap.addStreets()
-	streetMap.addCars(10, 30)
 	streetMap.addObstacles(3, 15)
+	streetMap.addCars(10, 300)
 }
 
 func update() {
@@ -86,11 +87,11 @@ func buttonPress() {
 		if speed > 0.1 {
 			speed -= 0.1
 		}
-		fmt.Println("press slower")
+		fmt.Println("Faster, delay: " + strconv.FormatFloat(speed, 'f', 1, 32) + "s.")
 	}
 	if slower.Contains(mainWindow.MousePosition()) {
 		speed += 0.1
-		fmt.Println("press faster")
+		fmt.Println("Slower, delay: " + strconv.FormatFloat(speed, 'f', 1, 32) + "s.")
 	}
 }
 

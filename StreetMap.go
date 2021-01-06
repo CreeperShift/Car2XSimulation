@@ -12,7 +12,7 @@ type StreetMap struct {
 	cars     []Car
 }
 
-func (m *StreetMap) addCars(amount int) {
+/*func (m *StreetMap) addCars(amount int) {
 	rand.Seed(time.Now().UnixNano())
 	count := 0
 
@@ -28,6 +28,27 @@ func (m *StreetMap) addCars(amount int) {
 		}
 	}
 
+}*/
+
+func (m *StreetMap) addCars(amount, tries int) {
+	rand.Seed(time.Now().UnixNano())
+	count := 0
+	f := 0
+
+	for count < amount {
+		count++
+		for f < tries {
+			f++
+			randX := rand.Intn(streetMap.size)
+			randY := rand.Intn(streetMap.size)
+			if m.tiles[randX][randY].tileType > 0 {
+				tex := rand.Intn(len(CarSprites))
+				car := Car{x: randX, y: randY, id: "car" + string(rune(count)), sensorActive: false, direction: UP, sprite: CarSprites[tex]}
+				m.cars = append(m.cars, car)
+				break
+			}
+		}
+	}
 }
 
 func (m *StreetMap) addObstacles(amount, tries int) {

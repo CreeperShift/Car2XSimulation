@@ -50,7 +50,7 @@ func Init() {
 
 	streetMap = NewMap(30, 31)
 	streetMap.addStreets()
-	streetMap.addCars(10)
+	streetMap.addCars(10, 30)
 	streetMap.addObstacles(3, 15)
 }
 

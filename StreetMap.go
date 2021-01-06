@@ -35,7 +35,7 @@ func (m *StreetMap) addCar() {
 
 	for x := range m.tiles {
 		for y := range m.tiles[x] {
-			if m.tiles[x][y].tileType == 1 && count < 10 {
+			if m.tiles[x][y].tileType > 0 && count < 10 {
 				tex := rand.Intn(len(sprites))
 				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: UP, sprite: sprites[tex]}
 				m.cars = append(m.cars, car)

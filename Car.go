@@ -18,6 +18,8 @@ type Car struct {
 	sprite       *pixel.Sprite
 }
 
+var CarSprites = []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}
+
 func (car Car) RenderCar() {
 
 	mat := pixel.IM

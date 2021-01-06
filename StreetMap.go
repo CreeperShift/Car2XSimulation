@@ -1,50 +1,52 @@
 package main
 
 import (
-	"fmt"
-	"github.com/faiface/pixel"
 	"math/rand"
 	"time"
 )
 
-type (
-	Tile struct {
-		x, y     float64
-		tileType int
-		rand     int
-	}
-	Obstacle struct {
-		x, y int
-	}
-	StreetMap struct {
-		size      int
-		tileSize  float64
-		tiles     [][]Tile
-		cars      []Car
-		obstacles []Obstacle
-	}
-)
+type StreetMap struct {
+	size     int
+	tileSize float64
+	tiles    [][]Tile
+	cars     []Car
+}
 
-func (m *StreetMap) addCar() {
-
-	//TODO: proper car spawning
-
-	sprites := []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}
-
+func (m *StreetMap) addCars(amount int) {
 	rand.Seed(time.Now().UnixNano())
 	count := 0
 
 	for x := range m.tiles {
 		for y := range m.tiles[x] {
-			if m.tiles[x][y].tileType > 0 && count < 10 {
-				tex := rand.Intn(len(sprites))
-				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: UP, sprite: sprites[tex]}
+			if m.tiles[x][y].tileType > 0 && count < amount {
+
+				tex := rand.Intn(len(CarSprites))
+				car := Car{x: x, y: y, id: "car" + string(rune(count)), sensorActive: false, direction: UP, sprite: CarSprites[tex]}
 				m.cars = append(m.cars, car)
 				count++
 			}
 		}
 	}
 
+}
+
+func (m *StreetMap) addObstacles(amount, tries int) {
+	rand.Seed(time.Now().UnixNano())
+	count := 0
+	f := 0
+
+	for count < amount {
+		count++
+		for f < tries {
+			f++
+			randX := rand.Intn(streetMap.size)
+			randY := rand.Intn(streetMap.size)
+			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
+				m.tiles[randX][randY].obstacle = true
+				break
+			}
+		}
+	}
 }
 
 func (m StreetMap) renderMap() {
@@ -66,8 +68,6 @@ func NewMap(size int, tilesize float64) *StreetMap {
 		s.tiles[i] = make([]Tile, size)
 	}
 
-	fmt.Println(s.tiles)
-
 	for i := range s.tiles {
 		for f := range s.tiles[i] {
 			var x, y float64
@@ -78,7 +78,6 @@ func NewMap(size int, tilesize float64) *StreetMap {
 			s.tiles[i][f].rand = rand.Intn(3)
 		}
 	}
-	fmt.Println(s.tiles)
 	return &s
 }
 
@@ -112,6 +111,7 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 	}
 
 	if rec > 0 {
+		rec--
 		rec--
 		divideSlice(slice[0:maxX][0:maxY], rec)
 	}
@@ -164,22 +164,6 @@ func checkDirection(x, y int, slice [][]Tile) (moves []Move) {
 		}
 	}
 	return moves
-}
-
-func (tile *Tile) setType(i int) {
-	tile.tileType = i
-}
-
-func (tile Tile) draw() {
-	var sprites = []*pixel.Sprite{LoadAndSprite("assets/TileE.png"), LoadAndSprite("assets/TileStreetPainted.png"), LoadAndSprite("assets/TileStreetPaintedRot.png"), LoadAndSprite("assets/TileStreetN.png")}
-	//	var spritesEmpty = []*pixel.Sprite{LoadAndSprite("assets/TileE.png"),LoadAndSprite("assets/TileE2.png"),LoadAndSprite("assets/TileE3.png")}
-	mat := pixel.IM
-	mat = mat.Moved(pixel.V(tile.x, tile.y))
-
-	/*	if tile.tileType == 0 {
-		sprites[0].Draw(mainWindow, mat)
-	} else {*/
-	sprites[tile.tileType].Draw(mainWindow, mat)
 }
 
 func (m *StreetMap) MoveCars() {

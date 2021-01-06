@@ -15,7 +15,7 @@ var basicAtlas *text.Atlas
 func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Car2Car Simulation",
-		Bounds: pixel.R(0, 0, 900, 900),
+		Bounds: pixel.R(0, 0, 930, 930),
 		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
@@ -25,7 +25,7 @@ func run() {
 	mainWindow = win
 	basicAtlas = text.NewAtlas(basicfont.Face7x13, text.ASCII)
 	Init()
-	win.Clear(colornames.Skyblue)
+	win.Clear(colornames.Black)
 
 	for !win.Closed() {
 		win.Update()
@@ -34,7 +34,7 @@ func run() {
 }
 
 func Init() {
-	streetMap = NewMap(30, true)
+	streetMap = NewMap(30, 31)
 	streetMap.addStreets()
 	streetMap.addCar()
 	//TODO: spawn obstacle (1 or more)

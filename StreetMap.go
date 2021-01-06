@@ -17,6 +17,7 @@ type (
 	}
 	StreetMap struct {
 		size      int
+		tileSize  float64
 		tiles     [][]Tile
 		cars      []Car
 		obstacles []Obstacle
@@ -36,7 +37,7 @@ func (m *StreetMap) addCar() {
 		for y := range m.tiles[x] {
 			if m.tiles[x][y].tileType == 1 && count < 10 {
 				tex := rand.Intn(len(sprites))
-				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: up, sprite: sprites[tex]}
+				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: UP, sprite: sprites[tex]}
 				m.cars = append(m.cars, car)
 
 				count++
@@ -54,10 +55,11 @@ func (m StreetMap) renderMap() {
 	}
 }
 
-func NewMap(size int, test bool) *StreetMap {
+func NewMap(size int, tilesize float64) *StreetMap {
 
 	s := StreetMap{
-		size: size,
+		size:     size,
+		tileSize: tilesize,
 	}
 	s.tiles = make([][]Tile, size)
 	for i := range s.tiles {
@@ -69,8 +71,8 @@ func NewMap(size int, test bool) *StreetMap {
 	for i := range s.tiles {
 		for f := range s.tiles[i] {
 			var x, y float64
-			x = 15 + float64(i)*30
-			y = 15 + float64(f)*30
+			x = 17 + float64(i)*s.tileSize
+			y = 17 + float64(f)*s.tileSize
 
 			s.tiles[i][f] = Tile{x: x, y: y}
 		}
@@ -82,12 +84,19 @@ func NewMap(size int, test bool) *StreetMap {
 func (m *StreetMap) addStreets() {
 
 	m.tiles = divideSlice(m.tiles, 2)
+	m.tiles = setCorrectStreetTile(m.tiles)
 }
 
 func divideSlice(slice [][]Tile, rec int) [][]Tile {
 	rand.Seed(time.Now().UnixNano())
-	maxX := rand.Intn(len(slice) - 1)
-	maxY := rand.Intn(len(slice) - 1)
+
+	if len(slice) == 0 {
+		rec = 0
+		return slice
+	}
+
+	maxX := rand.Intn(len(slice))
+	maxY := rand.Intn(len(slice))
 
 	for x := range slice {
 		for y := range slice[x] {
@@ -109,15 +118,64 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 	return slice
 }
 
+func setCorrectStreetTile(slice [][]Tile) [][]Tile {
+	for x := range slice {
+		for y := range slice[x] {
+			if slice[x][y].tileType > 0 {
+				moves := checkDirection(x, y, slice)
+				if len(moves) == 1 {
+					switch {
+					case compareDir(moves[0], RIGHT):
+						slice[x][y].tileType = 2
+					case compareDir(moves[0], LEFT):
+						slice[x][y].tileType = 2
+					}
+				} else if len(moves) == 2 {
+					switch {
+					case compareDir(moves[0], UP) && compareDir(moves[1], DOWN):
+						slice[x][y].tileType = 1
+					case compareDir(moves[0], DOWN) && compareDir(moves[1], UP):
+						slice[x][y].tileType = 1
+					case compareDir(moves[0], LEFT) && compareDir(moves[1], RIGHT):
+						slice[x][y].tileType = 2
+					case compareDir(moves[0], RIGHT) && compareDir(moves[1], LEFT):
+						slice[x][y].tileType = 2
+
+					}
+				} else if len(moves) > 2 {
+					slice[x][y].tileType = 3
+				}
+			}
+		}
+	}
+	return slice
+}
+
+func checkDirection(x, y int, slice [][]Tile) (moves []Move) {
+	for i := range dirALL {
+		if x+dirALL[i].x >= 0 && x+dirALL[i].x < len(slice) && y+dirALL[i].y >= 0 && y+dirALL[i].y < len(slice) {
+			//Tile is not outside board
+			xNew := x + dirALL[i].x
+			yNew := y + dirALL[i].y
+			if slice[xNew][yNew].tileType > 0 {
+				moves = append(moves, dirALL[i])
+			}
+		}
+	}
+	return moves
+}
+
 func (tile *Tile) setType(i int) {
 	tile.tileType = i
 }
 
 func (tile Tile) drawTile() {
-	sprites := [2]*pixel.Sprite{LoadAndSprite("assets/TileEmpty.png"), LoadAndSprite("assets/TileStreet.png")}
-
+	var sprites = []*pixel.Sprite{LoadAndSprite("assets/TileEmpty.png"), LoadAndSprite("assets/TileStreetPainted.png"), LoadAndSprite("assets/TileStreetPaintedRot.png"), LoadAndSprite("assets/TileStreetN.png")}
 	mat := pixel.IM
 	mat = mat.Moved(pixel.V(tile.x, tile.y))
+	if tile.tileType == 0 {
+		mat = mat.Scaled(pixel.V(tile.x, tile.y), 31)
+	}
 
 	sprites[tile.tileType].Draw(mainWindow, mat)
 	/*		basicTxt := text.New(pixel.V(tile.x, tile.y), basicAtlas)

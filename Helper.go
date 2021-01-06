@@ -8,6 +8,23 @@ import (
 	"os"
 )
 
+var UP = Move{y: 1}
+var DOWN = Move{y: -1}
+var LEFT = Move{x: -1}
+var RIGHT = Move{x: 1}
+
+var dirALL = []Move{UP, DOWN, LEFT, RIGHT}
+var dirUP = []Move{UP, LEFT, RIGHT}
+var dirDOWN = []Move{DOWN, LEFT, RIGHT}
+var dirLEFT = []Move{UP, LEFT, DOWN}
+var dirRIGHT = []Move{UP, DOWN, RIGHT}
+
+var dir = [][]Move{dirUP, dirDOWN, dirLEFT, dirRIGHT}
+
+func compareDir(a, b Move) bool {
+	return a.x == b.x && a.y == b.y
+}
+
 func IntegerPercentage(x int, f float64) (ret int) {
 	return int(math.Round(float64(x) * f))
 }

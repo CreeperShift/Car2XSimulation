@@ -2,14 +2,20 @@ package main
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 )
 
 type StreetMap struct {
-	size     int
-	tileSize float64
-	tiles    [][]Tile
-	cars     []Car
+	size      int
+	tileSize  float64
+	tiles     [][]Tile
+	cars      []Car
+	obstacles []Obstacle
+}
+
+type Obstacle struct {
+	x, y int
 }
 
 func (m *StreetMap) addCars(amount, tries int) {
@@ -25,7 +31,7 @@ func (m *StreetMap) addCars(amount, tries int) {
 			randY := rand.Intn(streetMap.size)
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
 				tex := rand.Intn(len(CarSprites))
-				car := Car{x: randX, y: randY, id: "car" + string(rune(count)), sensorActive: false, direction: UP, sprite: CarSprites[tex]}
+				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), sensorActive: false, direction: UP, sprite: CarSprites[tex]}
 				m.cars = append(m.cars, car)
 				break
 			}
@@ -44,8 +50,16 @@ func (m *StreetMap) addObstacles(amount, tries int) {
 			f++
 			randX := rand.Intn(streetMap.size)
 			randY := rand.Intn(streetMap.size)
-			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
+			canPlace := true
+			for _, ob := range m.obstacles {
+				if getDistance(float64(randX), float64(randY), float64(ob.x), float64(ob.y)) < 8 {
+					canPlace = false
+					break
+				}
+			}
+			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle && canPlace {
 				m.tiles[randX][randY].obstacle = true
+				m.obstacles = append(m.obstacles, Obstacle{randX, randY})
 				break
 			}
 		}
@@ -101,6 +115,8 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 	maxX := rand.Intn(len(slice))
 	maxY := rand.Intn(len(slice))
 
+	//TODO: Prevent 2 streets next to each other
+
 	for x := range slice {
 		for y := range slice[x] {
 
@@ -115,7 +131,7 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 
 	if rec > 0 {
 		rec--
-		rec--
+		//rec--
 		divideSlice(slice[0:maxX][0:maxY], rec)
 	}
 

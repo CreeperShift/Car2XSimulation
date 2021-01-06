@@ -11,6 +11,7 @@ type (
 	Tile struct {
 		x, y     float64
 		tileType int
+		rand     int
 	}
 	Obstacle struct {
 		x, y int
@@ -39,7 +40,6 @@ func (m *StreetMap) addCar() {
 				tex := rand.Intn(len(sprites))
 				car := Car{x: x, y: y, id: "car1", sensorActive: false, direction: UP, sprite: sprites[tex]}
 				m.cars = append(m.cars, car)
-
 				count++
 			}
 		}
@@ -50,7 +50,7 @@ func (m *StreetMap) addCar() {
 func (m StreetMap) renderMap() {
 	for i := range m.tiles {
 		for f := range m.tiles[i] {
-			m.tiles[i][f].drawTile()
+			m.tiles[i][f].draw()
 		}
 	}
 }
@@ -75,6 +75,7 @@ func NewMap(size int, tilesize float64) *StreetMap {
 			y = 17 + float64(f)*s.tileSize
 
 			s.tiles[i][f] = Tile{x: x, y: y}
+			s.tiles[i][f].rand = rand.Intn(3)
 		}
 	}
 	fmt.Println(s.tiles)
@@ -169,18 +170,16 @@ func (tile *Tile) setType(i int) {
 	tile.tileType = i
 }
 
-func (tile Tile) drawTile() {
-	var sprites = []*pixel.Sprite{LoadAndSprite("assets/TileEmpty.png"), LoadAndSprite("assets/TileStreetPainted.png"), LoadAndSprite("assets/TileStreetPaintedRot.png"), LoadAndSprite("assets/TileStreetN.png")}
+func (tile Tile) draw() {
+	var sprites = []*pixel.Sprite{LoadAndSprite("assets/TileE.png"), LoadAndSprite("assets/TileStreetPainted.png"), LoadAndSprite("assets/TileStreetPaintedRot.png"), LoadAndSprite("assets/TileStreetN.png")}
+	//	var spritesEmpty = []*pixel.Sprite{LoadAndSprite("assets/TileE.png"),LoadAndSprite("assets/TileE2.png"),LoadAndSprite("assets/TileE3.png")}
 	mat := pixel.IM
 	mat = mat.Moved(pixel.V(tile.x, tile.y))
-	if tile.tileType == 0 {
-		mat = mat.Scaled(pixel.V(tile.x, tile.y), 31)
-	}
 
+	/*	if tile.tileType == 0 {
+		sprites[0].Draw(mainWindow, mat)
+	} else {*/
 	sprites[tile.tileType].Draw(mainWindow, mat)
-	/*		basicTxt := text.New(pixel.V(tile.x, tile.y), basicAtlas)
-			fmt.Fprintln(basicTxt, tile.x, " ", tile.y)
-			basicTxt.Draw(mainWindow, pixel.IM.Scaled(basicTxt.Orig, 0.5))*/
 }
 
 func (m *StreetMap) MoveCars() {

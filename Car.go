@@ -24,7 +24,28 @@ func (car Car) RenderCar() {
 	mat = mat.Moved(pixel.V(streetMap.tiles[car.x][car.y].x, streetMap.tiles[car.x][car.y].y))
 	mat = mat.Rotated(pixel.V(streetMap.tiles[car.x][car.y].x, streetMap.tiles[car.x][car.y].y), rotateDirection(car.direction))
 
+	mat = moveToLane(mat, car)
+
 	car.sprite.Draw(mainWindow, mat)
+}
+
+func moveToLane(mat pixel.Matrix, car Car) pixel.Matrix {
+
+	distance := 8.0
+
+	switch car.direction {
+	case UP:
+		return mat.Moved(pixel.V(distance, 0))
+	case DOWN:
+		return mat.Moved(pixel.V(-distance, 0))
+	case LEFT:
+		return mat.Moved(pixel.V(0, distance))
+	case RIGHT:
+		return mat.Moved(pixel.V(0, -distance))
+	default:
+		return mat
+	}
+
 }
 
 func (car *Car) MoveCar() {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/faiface/pixel"
 	"math"
 	"math/rand"
@@ -17,7 +18,10 @@ type Car struct {
 	direction    Move
 	sprite       *pixel.Sprite
 	status       string
+	Messages     []Message
 }
+
+var WifiDistance = 25.0
 
 var CarSprites = []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}
 
@@ -128,7 +132,54 @@ func (car *Car) addDir(m Move) {
 
 	car.x = car.x + m.x
 	car.y = car.y + m.y
+
+	if streetMap.tiles[car.x][car.y].obstacle {
+		//TODO: send message
+		sendMessage(car, createMessage(*car))
+	}
+
 	car.direction = m
+}
+
+func (car *Car) receiveMessage(m Message) {
+	car.Messages = append(car.Messages, m)
+}
+
+func (car *Car) update() {
+	car.checkMessages()
+	car.MoveCar()
+
+}
+
+func (car *Car) checkMessages() {
+	fmt.Println(car.Messages)
+
+	for i, m := range car.Messages {
+		fmt.Println("checking message")
+
+		if m.sender == car.id {
+			removeMessage(car, i)
+			continue
+		}
+
+		if m.hopCounter == 0 {
+			removeMessage(car, i)
+			continue
+		}
+		if m.timeCounter == 0 {
+			removeMessage(car, i)
+			continue
+		}
+		m.hopCounter--
+		sendMessage(car, m)
+	}
+
+}
+
+func removeMessage(car *Car, i int) {
+	car.Messages[i] = car.Messages[len(car.Messages)-1]
+	car.Messages[len(car.Messages)-1] = Message{}
+	car.Messages = car.Messages[:len(car.Messages)-1]
 }
 
 func isInside(car Car, f int, mov []Move) bool {

@@ -33,7 +33,8 @@ func (m *StreetMap) addCars(amount, tries int) {
 			randY := rand.Intn(streetMap.size)
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
 				tex := rand.Intn(len(CarSprites))
-				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), sensorActive: false, direction: UP, sprite: CarSprites[tex]}
+				mes := make([]Message, 0)
+				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), sensorActive: false, direction: UP, sprite: CarSprites[tex], Messages: mes}
 				m.cars = append(m.cars, car)
 				break
 			}
@@ -61,7 +62,9 @@ func (m *StreetMap) addObstacles(amount, tries int) {
 			}
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle && canPlace {
 				m.tiles[randX][randY].obstacle = true
-				m.obstacles = append(m.obstacles, Obstacle{x: randX, y: randY, oType: messageCodes[rand.Intn(len(messageCodes))]})
+				o := messageCodes[rand.Intn(len(messageCodes))]
+				m.tiles[randX][randY].obstacleType = o
+				m.obstacles = append(m.obstacles, Obstacle{x: randX, y: randY, oType: o})
 				break
 			}
 		}
@@ -72,6 +75,15 @@ func (m StreetMap) renderMap() {
 	for i := range m.tiles {
 		for f := range m.tiles[i] {
 			m.tiles[i][f].draw()
+		}
+	}
+}
+
+func (m *StreetMap) sendMessageToCar(id string, message Message) {
+
+	for _, c := range m.cars {
+		if c.id == id {
+			c.receiveMessage(message)
 		}
 	}
 }
@@ -187,9 +199,9 @@ func checkDirection(x, y int, slice [][]Tile) (moves []Move) {
 	return moves
 }
 
-func (m *StreetMap) MoveCars() {
+func (m *StreetMap) UpdateCars() {
 	for f := range m.cars {
-		m.cars[f].MoveCar()
+		m.cars[f].update()
 	}
 }
 

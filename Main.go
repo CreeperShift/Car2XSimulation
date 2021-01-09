@@ -84,7 +84,7 @@ func Init() {
 func update() {
 	mainWindow.Clear(colornames.Lightgray)
 	streetMap.renderMap()
-	streetMap.MoveCars()
+	streetMap.UpdateCars()
 	streetMap.RenderCars()
 	renderButtons()
 	renderGUI()

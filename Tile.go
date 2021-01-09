@@ -5,10 +5,11 @@ import (
 )
 
 type Tile struct {
-	x, y     float64
-	tileType int
-	rand     int
-	obstacle bool
+	x, y         float64
+	tileType     int
+	rand         int
+	obstacle     bool
+	obstacleType int
 }
 
 var TileSprites = []*pixel.Sprite{LoadAndSprite("assets/TileE.png"), LoadAndSprite("assets/TileStreetPainted.png"), LoadAndSprite("assets/TileStreetPaintedRot.png"), LoadAndSprite("assets/TileStreetN.png")}

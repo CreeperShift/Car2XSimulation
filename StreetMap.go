@@ -15,7 +15,8 @@ type StreetMap struct {
 }
 
 type Obstacle struct {
-	x, y int
+	x, y  int
+	oType int
 }
 
 func (m *StreetMap) addCars(amount, tries int) {
@@ -25,6 +26,7 @@ func (m *StreetMap) addCars(amount, tries int) {
 
 	for count < amount {
 		count++
+
 		for f < tries {
 			f++
 			randX := rand.Intn(streetMap.size)
@@ -59,7 +61,7 @@ func (m *StreetMap) addObstacles(amount, tries int) {
 			}
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle && canPlace {
 				m.tiles[randX][randY].obstacle = true
-				m.obstacles = append(m.obstacles, Obstacle{randX, randY})
+				m.obstacles = append(m.obstacles, Obstacle{x: randX, y: randY, oType: messageCodes[rand.Intn(len(messageCodes))]})
 				break
 			}
 		}

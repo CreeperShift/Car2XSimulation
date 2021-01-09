@@ -51,6 +51,8 @@ func run() {
 			dt = 0.0
 			update()
 		}
+
+		//TODO: LERP CARS
 		win.Update()
 	}
 }

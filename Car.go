@@ -91,7 +91,10 @@ func (car *Car) MoveCar() {
 	}
 	if len(movePool) > 0 {
 		i := rand.Intn(len(movePool))
-		car.addDir(movePool[i])
+
+		if !isOccupied(movePool[i], car) {
+			car.addDir(movePool[i])
+		}
 	} else {
 		switch {
 		case compareDir(car.direction, UP):
@@ -105,6 +108,20 @@ func (car *Car) MoveCar() {
 		}
 	}
 
+}
+
+func isOccupied(move Move, car *Car) bool {
+	x := car.x + move.x
+	y := car.y + move.y
+
+	for _, c := range streetMap.cars {
+		if c.x == x && c.y == y {
+			if car.direction == c.direction {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (car *Car) addDir(m Move) {

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="64db7b7c-05bb-43ac-a710-e1225fcabb5f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="WifiSimulation" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1m6042qzKH2Y7wbqvCld8ga3X6o" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+  </component>
+  <component name="RecentsManager">
+    <key name="GoMoveDeclarationDialog.RECENT_KEY">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\maxhe\go\src\awesomeProject1" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\maxhe\go\src\awesomeProject1\assets" />
+      <recent name="C:\Users\maxhe\go\src\awesomeProject1" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build awesomeProject1">
+    <configuration name="go build awesomeProject1 exe" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="awesomeProject1" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="awesomeProject1" />
+      <package value="awesomeProject1" />
+      <directory value="$PROJECT_DIR$" />
+      <output_directory value="exe" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build awesomeProject1" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="awesomeProject1" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/Main.go" />
+      <package value="awesomeProject1" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build awesomeProject1" />
+      <item itemvalue="Go Build.go build awesomeProject1 exe" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Car -&gt; Tile relationship" />
+    <MESSAGE value="Car Movement" />
+    <MESSAGE value="gitignore" />
+    <MESSAGE value="map gen" />
+    <MESSAGE value="Basic map creation&#10;Fixed TileEmpty 3x too large&#10;Cars turn around on dead end" />
+    <MESSAGE value="Car Variety" />
+    <MESSAGE value="Added street markings" />
+    <MESSAGE value="Fixed Car spawning&#10;Added Textures" />
+    <MESSAGE value="Background textures" />
+    <MESSAGE value="Separated Tiles&#10;Added Obstacles&#10;Obstacle Render" />
+    <MESSAGE value="Simulation speed control" />
+    <MESSAGE value="Added Speed Buttons" />
+    <MESSAGE value="Randomized Car spawning" />
+    <MESSAGE value="Deleted unused code&#10;Speed Fixes" />
+    <MESSAGE value="Better obstacle spawning&#10;Moved GUI slightly" />
+    <MESSAGE value="Added missing assets" />
+    <MESSAGE value="Cars don't move into other cars&#10;Basic message struct&#10;Added error codes" />
+    <MESSAGE value="More work on Message.go" />
+    <option name="LAST_COMMIT_MESSAGE" value="More work on Message.go" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+</project>

@@ -25,6 +25,9 @@ var guiBase pixel.Vec
 var FontHeader *text.Atlas
 var FontText *text.Atlas
 
+var last time.Time
+var dt float64
+
 func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Car2Car Simulation",
@@ -38,22 +41,40 @@ func run() {
 	mainWindow = win
 	Init()
 
-	last := time.Now()
-	dt := 0.5
+	last = time.Now()
+	dt = 0.5
 	for !win.Closed() {
 
-		if win.JustPressed(pixelgl.MouseButtonLeft) {
-			buttonPress()
-		}
-		dt = dt + time.Since(last).Seconds()
-		last = time.Now()
-		if dt > speed {
-			dt = 0.0
-			update()
-		}
+		handleButtons()
+		handleSimulation()
 
 		//TODO: LERP CARS
 		win.Update()
+	}
+}
+
+func handleSimulation() {
+
+	dt = dt + time.Since(last).Seconds()
+	last = time.Now()
+	if dt > speed {
+		dt = 0.0
+		if len(GetMessages()) == 0 {
+			update()
+		} else {
+			updateWifi()
+		}
+
+	}
+}
+
+func updateWifi() {
+	updateMessages()
+}
+
+func handleButtons() {
+	if mainWindow.JustPressed(pixelgl.MouseButtonLeft) {
+		buttonPress()
 	}
 }
 

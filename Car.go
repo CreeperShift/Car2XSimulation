@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/faiface/pixel"
 	"math"
 	"math/rand"
@@ -12,16 +11,13 @@ type Move struct {
 }
 
 type Car struct {
-	x, y         int
-	id           string
-	sensorActive bool
-	direction    Move
-	sprite       *pixel.Sprite
-	status       string
-	Messages     []Message
+	x, y             int
+	id               string
+	direction        Move
+	sprite           *pixel.Sprite
+	status           string
+	ReceivedMessages []Message
 }
-
-var WifiDistance = 25.0
 
 var CarSprites = []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}
 
@@ -134,15 +130,12 @@ func (car *Car) addDir(m Move) {
 	car.y = car.y + m.y
 
 	if streetMap.tiles[car.x][car.y].obstacle {
-		//TODO: send message
-		sendMessage(car, createMessage(*car))
+		message := NewActiveMessage(*car, NewMessage(*car))
+		AddMessage(*message)
+		car.receiveMessage(message.message)
 	}
 
 	car.direction = m
-}
-
-func (car *Car) receiveMessage(m Message) {
-	car.Messages = append(car.Messages, m)
 }
 
 func (car *Car) update() {
@@ -151,35 +144,37 @@ func (car *Car) update() {
 
 }
 
-func (car *Car) checkMessages() {
-	fmt.Println(car.Messages)
-
-	for i, m := range car.Messages {
-		fmt.Println("checking message")
-
-		if m.sender == car.id {
-			removeMessage(car, i)
-			continue
+func (car *Car) receiveMessage(message Message) {
+	for _, f := range car.ReceivedMessages {
+		if message.isEqual(f) {
+			return
 		}
-
-		if m.hopCounter == 0 {
-			removeMessage(car, i)
-			continue
-		}
-		if m.timeCounter == 0 {
-			removeMessage(car, i)
-			continue
-		}
-		m.hopCounter--
-		sendMessage(car, m)
 	}
-
+	car.ReceivedMessages = append(car.ReceivedMessages, message)
 }
 
-func removeMessage(car *Car, i int) {
-	car.Messages[i] = car.Messages[len(car.Messages)-1]
-	car.Messages[len(car.Messages)-1] = Message{}
-	car.Messages = car.Messages[:len(car.Messages)-1]
+func (car *Car) checkMessages() {
+
+	for i, f := range car.ReceivedMessages {
+		if f.timeCounter <= 0 {
+			car.ReceivedMessages = remove(car.ReceivedMessages, i)
+			continue
+		}
+		if f.hopCounter > 0 {
+			newMessage := f
+			newMessage.hopCounter--
+			var newActiveMessage = NewActiveMessage(*car, newMessage)
+			AddMessage(*newActiveMessage)
+		}
+		f.timeCounter--
+	}
+}
+
+func remove(list []Message, i int) []Message {
+	list[i] = list[len(list)-1]
+	list[len(list)-1] = Message{}
+	list = list[:len(list)-1]
+	return list
 }
 
 func isInside(car Car, f int, mov []Move) bool {

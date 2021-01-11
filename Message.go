@@ -7,14 +7,28 @@ type Message struct {
 	messageCode int
 	warnSize    float64
 	timeCounter float64
+	messageID   uint
 }
 
-func (message *Message) HopCounter() int {
-	return message.hopCounter
+func NewMessage(car Car) Message {
+	messageIDs++
+
+	m := Message{}
+	m.sender = car.id
+	m.locX = car.x
+	m.locY = car.y
+	m.messageCode = streetMap.tiles[car.x][car.y].obstacleType
+	m.hopCounter = 3
+	m.warnSize = 15
+	m.messageID = messageIDs
+
+	return m
 }
 
-func (message *Message) SetHopCounter(hopCounter int) {
-	message.hopCounter = hopCounter
+var messageIDs uint = 0
+
+func (m *Message) update() {
+	//TODO: UPDATE FUNCTION
 }
 
 var messageCodes = []int{
@@ -30,50 +44,6 @@ var messageCodeMapped = map[int]string{
 	97: "collisionRisk",
 }
 
-func (message *Message) setSender(s string) {
-	message.sender = s
-}
-
-func (message *Message) setHops(i int) {
-	message.hopCounter = i
-}
-func (message *Message) setXY(x, y int) {
-	message.locX = x
-	message.locY = y
-}
-func (message *Message) setCode(i int) {
-	message.messageCode = i
-}
-func (message *Message) setWarnSize(i float64) {
-	message.warnSize = i
-}
-func (message *Message) setTimeCounter(i float64) {
-	message.timeCounter = i
-}
-
-func sendMessage(car *Car, message Message) {
-	for _, c := range streetMap.cars {
-
-		distanceWifi := getDistance(float64(car.x), float64(car.y), float64(c.x), float64(c.y))
-		if distanceWifi < WifiDistance {
-
-			distance := getDistance(float64(c.x), float64(c.y), float64(message.locX), float64(message.locY))
-			if distance < message.warnSize {
-				streetMap.sendMessageToCar(c.id, message)
-			}
-		}
-
-	}
-}
-
-func createMessage(car Car) Message {
-	m := Message{}
-	m.sender = car.id
-	m.locX = car.x
-	m.locY = car.y
-	m.messageCode = streetMap.tiles[car.x][car.y].obstacleType
-	m.hopCounter = 3
-	m.timeCounter = 5
-	m.warnSize = 15
-	return m
+func (m Message) isEqual(message Message) bool {
+	return m.messageID == message.messageID
 }

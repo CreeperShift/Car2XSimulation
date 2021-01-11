@@ -100,3 +100,17 @@ func getDistance(x1, y1, x2, y2 float64) float64 {
 	return math.Sqrt(math.Pow(x2-x1, 2) + math.Pow(y2-y1, 2))
 
 }
+
+func ClampValue(v, clamp float64) float64 {
+	if clamp == 0 {
+		if v < 0 {
+			return 0
+		} else {
+			return v
+		}
+	}
+	if v > clamp {
+		return clamp
+	}
+	return v
+}

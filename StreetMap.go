@@ -19,6 +19,15 @@ type Obstacle struct {
 	oType int
 }
 
+func (m *StreetMap) getCarByLocation(x, y int) (bool, *Car) {
+	for _, c := range m.cars {
+		if c.x == x && c.y == y {
+			return true, &c
+		}
+	}
+	return false, nil
+}
+
 func (m *StreetMap) addCars(amount, tries int) {
 	rand.Seed(time.Now().UnixNano())
 	count := 0
@@ -34,7 +43,7 @@ func (m *StreetMap) addCars(amount, tries int) {
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
 				tex := rand.Intn(len(CarSprites))
 				mes := make([]Message, 0)
-				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), sensorActive: false, direction: UP, sprite: CarSprites[tex], Messages: mes}
+				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), direction: UP, sprite: CarSprites[tex], ReceivedMessages: mes}
 				m.cars = append(m.cars, car)
 				break
 			}
@@ -75,15 +84,6 @@ func (m StreetMap) renderMap() {
 	for i := range m.tiles {
 		for f := range m.tiles[i] {
 			m.tiles[i][f].draw()
-		}
-	}
-}
-
-func (m *StreetMap) sendMessageToCar(id string, message Message) {
-
-	for _, c := range m.cars {
-		if c.id == id {
-			c.receiveMessage(message)
 		}
 	}
 }

@@ -69,7 +69,12 @@ func handleSimulation() {
 }
 
 func updateWifi() {
+	mainWindow.Clear(colornames.Lightgray)
+	streetMap.renderMap()
+	streetMap.RenderCars()
 	updateMessages()
+	renderButtons()
+	renderGUI()
 }
 
 func handleButtons() {
@@ -109,10 +114,6 @@ func update() {
 	streetMap.RenderCars()
 	renderButtons()
 	renderGUI()
-	//TODO: Check Obstacles
-	//TODO: Communication
-	//TODO: Warn
-	//TODO: Render Comm/Warning
 }
 
 func renderGUI() {

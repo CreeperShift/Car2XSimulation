@@ -151,6 +151,7 @@ func (car *Car) receiveMessage(message Message) {
 		}
 	}
 	car.ReceivedMessages = append(car.ReceivedMessages, message)
+	car.checkMessages()
 }
 
 func (car *Car) checkMessages() {
@@ -165,6 +166,7 @@ func (car *Car) checkMessages() {
 			newMessage.hopCounter--
 			var newActiveMessage = NewActiveMessage(*car, newMessage)
 			AddMessage(*newActiveMessage)
+			queue = append(queue, *newActiveMessage)
 		}
 		f.timeCounter--
 	}

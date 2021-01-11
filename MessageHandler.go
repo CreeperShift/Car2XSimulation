@@ -1,17 +1,21 @@
 package main
 
 import (
-	"fmt"
+	"github.com/faiface/pixel"
 )
 
 type ActiveMessage struct {
 	currentSize float64
 	locX, locY  float64
 	message     Message
+	messageID   uint
 }
 
+var activeMessageIDs uint = 0
+
 func NewActiveMessage(car Car, message Message) *ActiveMessage {
-	return &ActiveMessage{locX: float64(car.x), locY: float64(car.y), message: message, currentSize: 1}
+	activeMessageIDs++
+	return &ActiveMessage{locX: float64(car.x), locY: float64(car.y), message: message, currentSize: 1, messageID: activeMessageIDs}
 }
 
 func (m *ActiveMessage) update() {
@@ -26,6 +30,8 @@ func (m *ActiveMessage) update() {
 
 func getCarsInArea(locX, locY float64, size float64) (cars []*Car) {
 
+	var ico = LoadAndSprite("assets/badpix/message-16-info.png")
+
 	lowerBoundX := locX - size
 	lowerBoundX = ClampValue(lowerBoundX, 0)
 	lowerBoundY := locY - size
@@ -36,6 +42,7 @@ func getCarsInArea(locX, locY float64, size float64) (cars []*Car) {
 
 	upperBoundY := locY + size
 	upperBoundY = ClampValue(upperBoundY, float64(len(streetMap.tiles)-1))
+	//	fmt.Println("Loc was: ", locX, ", ", locY, " clamped to: ", lowerBoundX, " , ", upperBoundX, " - ", lowerBoundY, ", ", upperBoundX)
 
 	for i := lowerBoundX; i <= upperBoundX; i++ {
 		for f := lowerBoundY; f <= upperBoundY; f++ {
@@ -43,6 +50,14 @@ func getCarsInArea(locX, locY float64, size float64) (cars []*Car) {
 			if hasCar {
 				cars = append(cars, car)
 			}
+			mat := pixel.IM
+
+			ii := int(i)
+			ff := int(f)
+
+			v := pixel.V(streetMap.tiles[ii][ff].x, streetMap.tiles[ii][ff].y)
+			mat = mat.Moved(v)
+			ico.Draw(mainWindow, mat)
 		}
 	}
 	return cars
@@ -52,6 +67,7 @@ type ActiveMessages []ActiveMessage
 
 var (
 	instance ActiveMessages
+	queue    ActiveMessages
 )
 
 func GetMessages() []ActiveMessage {
@@ -69,21 +85,39 @@ func AddMessage(message ActiveMessage) {
 
 func updateMessages() {
 
-	for i, f := range GetMessages() {
-		if f.currentSize == f.message.warnSize {
-			instance = removeMessage(GetMessages(), i)
+	var uInstance = make(ActiveMessages, 0)
 
-			fmt.Println("removed message")
-			continue
+	for _, f := range GetMessages() {
+		if f.currentSize < f.message.warnSize {
+			uInstance = append(uInstance, f)
 		}
-		f.update()
-		instance[i] = f
+	}
+	instance = uInstance
+	queue = uInstance
+	if len(queue) > 0 {
+		updateMessageRec()
 	}
 }
 
-func removeMessage(list []ActiveMessage, i int) []ActiveMessage {
-	list[i] = list[len(list)-1]
-	list[len(list)-1] = ActiveMessage{}
-	list = list[:len(list)-1]
-	return list
+func (m *ActiveMessages) getActiveMessageFromID(id uint) int {
+	for i, e := range *m {
+		if e.messageID == id {
+			return i
+		}
+	}
+	return 0
+}
+
+func updateMessageRec() {
+	m := queue[0]
+	m.update()
+	i := instance.getActiveMessageFromID(m.messageID)
+	instance[i].currentSize = m.currentSize
+	queue = queue[1:]
+	if len(queue) > 0 {
+		updateMessageRec()
+	}
+
+	//TODO: Fix Followup shit
+
 }

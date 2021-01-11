@@ -19,17 +19,13 @@ func NewMessage(car Car) Message {
 	m.locY = car.y
 	m.messageCode = streetMap.tiles[car.x][car.y].obstacleType
 	m.hopCounter = 3
-	m.warnSize = 15
+	m.warnSize = 5
 	m.messageID = messageIDs
 
 	return m
 }
 
 var messageIDs uint = 0
-
-func (m *Message) update() {
-	//TODO: UPDATE FUNCTION
-}
 
 var messageCodes = []int{
 	2, 3, 12, 91, 92, 97,

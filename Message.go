@@ -10,17 +10,18 @@ type Message struct {
 	messageID   uint
 }
 
-func NewMessage(car Car) Message {
+func NewMessage(car Car) (m *Message) {
 	messageIDs++
 
-	m := Message{}
+	m = &Message{}
 	m.sender = car.id
 	m.locX = car.x
 	m.locY = car.y
 	m.messageCode = streetMap.tiles[car.x][car.y].obstacleType
-	m.hopCounter = 3
-	m.warnSize = 5
+	m.hopCounter = 2
+	m.warnSize = 3
 	m.messageID = messageIDs
+	m.timeCounter = 10
 
 	return m
 }

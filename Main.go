@@ -103,8 +103,8 @@ func Init() {
 	mainWindow.SetSmooth(true)
 	streetMap = NewMap(30, 30.5)
 	streetMap.addStreets()
-	streetMap.addObstacles(3, 50)
-	streetMap.addCars(20, 300)
+	streetMap.addObstacles(1, 50)
+	streetMap.addCars(10, 300)
 }
 
 func update() {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/faiface/pixel"
 	"math"
 	"math/rand"
@@ -130,7 +131,7 @@ func (car *Car) addDir(m Move) {
 	car.y = car.y + m.y
 
 	if streetMap.tiles[car.x][car.y].obstacle {
-		message := NewActiveMessage(*car, NewMessage(*car))
+		message := NewActiveMessage(*car, *NewMessage(*car))
 		AddMessage(*message)
 		car.receiveMessage(message.message)
 	}
@@ -145,38 +146,43 @@ func (car *Car) update() {
 }
 
 func (car *Car) receiveMessage(message Message) {
+
+	fmt.Println("rec")
+
 	for _, f := range car.ReceivedMessages {
 		if message.isEqual(f) {
+			fmt.Println("was equal")
 			return
 		}
 	}
 	car.ReceivedMessages = append(car.ReceivedMessages, message)
+	fmt.Println(car.ReceivedMessages)
 	car.checkMessages()
 }
 
 func (car *Car) checkMessages() {
 
-	for i, f := range car.ReceivedMessages {
-		if f.timeCounter <= 0 {
-			car.ReceivedMessages = remove(car.ReceivedMessages, i)
-			continue
+	cleanedMessages := make([]Message, 0)
+
+	for _, f := range car.ReceivedMessages {
+		if f.timeCounter > 0 {
+			f.timeCounter--
+			cleanedMessages = append(cleanedMessages, f)
 		}
+	}
+
+	for _, f := range cleanedMessages {
+
 		if f.hopCounter > 0 {
 			newMessage := f
 			newMessage.hopCounter--
 			var newActiveMessage = NewActiveMessage(*car, newMessage)
-			AddMessage(*newActiveMessage)
-			queue = append(queue, *newActiveMessage)
+			fmt.Println("sent new mesg")
+			futureInstance = append(futureInstance, newActiveMessage)
+			fmt.Println(futureInstance)
 		}
-		f.timeCounter--
 	}
-}
-
-func remove(list []Message, i int) []Message {
-	list[i] = list[len(list)-1]
-	list[len(list)-1] = Message{}
-	list = list[:len(list)-1]
-	return list
+	car.ReceivedMessages = cleanedMessages
 }
 
 func isInside(car Car, f int, mov []Move) bool {

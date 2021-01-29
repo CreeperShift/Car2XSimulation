@@ -3,7 +3,6 @@ package main
 import (
 	"math/rand"
 	"strconv"
-	"time"
 )
 
 type StreetMap struct {
@@ -26,7 +25,6 @@ func (m *StreetMap) init() {
 }
 
 func (m *StreetMap) addCars(amount, tries int) {
-	rand.Seed(time.Now().UnixNano())
 	count := 0
 	f := 0
 
@@ -48,7 +46,6 @@ func (m *StreetMap) addCars(amount, tries int) {
 }
 
 func (m *StreetMap) addObstacles(amount, tries int) {
-	rand.Seed(time.Now().UnixNano())
 	count := 0
 	f := 0
 
@@ -115,7 +112,6 @@ func (m *StreetMap) addStreets() {
 }
 
 func divideSlice(slice [][]Tile, rec int) [][]Tile {
-	rand.Seed(simulationSeed)
 
 	if len(slice) == 0 {
 		rec = 0

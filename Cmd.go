@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"math/rand"
 	"time"
 )
 
@@ -29,4 +30,6 @@ func setupFlags() {
 	simulationCars = *carsPtr
 	simulationObstacles = *obstPtr
 	simulationTimeCounter = *timePtr
+
+	rand.Seed(simulationSeed)
 }

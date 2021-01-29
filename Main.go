@@ -52,7 +52,6 @@ func simulate() {
 		} else {
 			updateWifi()
 		}
-
 	}
 }
 

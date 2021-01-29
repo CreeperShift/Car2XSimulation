@@ -19,13 +19,10 @@ type Obstacle struct {
 	oType int
 }
 
-func (m *StreetMap) getCarByLocation(x, y int) (bool, *Car) {
-	for _, c := range m.cars {
-		if c.x == x && c.y == y {
-			return true, &c
-		}
-	}
-	return false, nil
+func (m *StreetMap) init() {
+	m.addStreets()
+	m.addObstacles(simulationObstacles, 500)
+	m.addCars(simulationCars, 3000)
 }
 
 func (m *StreetMap) addCars(amount, tries int) {
@@ -113,7 +110,7 @@ func NewMap(size int, tilesize float64) *StreetMap {
 }
 
 func (m *StreetMap) addStreets() {
-
+	//TODO: improve algo
 	m.tiles = divideSlice(m.tiles, 2)
 	m.tiles = setCorrectStreetTile(m.tiles)
 }
@@ -208,4 +205,13 @@ func (m StreetMap) RenderCars() {
 	for i := range m.cars {
 		m.cars[i].RenderCar()
 	}
+}
+
+func (m *StreetMap) getCarByLocation(x, y int) (bool, *Car) {
+	for _, c := range m.cars {
+		if c.x == x && c.y == y {
+			return true, &c
+		}
+	}
+	return false, nil
 }

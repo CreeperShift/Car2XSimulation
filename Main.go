@@ -1,67 +1,47 @@
 package main
 
 import (
-	"flag"
-	"fmt"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/faiface/pixel/text"
 	"golang.org/x/image/colornames"
-	"strconv"
 	"time"
 )
 
 var mainWindow *pixelgl.Window
 var streetMap *StreetMap
 
-var sizeX float64 = 1330
-var sizeY float64 = 930
-
-var faster pixel.Rect
-var slower pixel.Rect
-var speed = 0.5
-var guiBase pixel.Vec
-
-//Fonts
-var FontHeader *text.Atlas
-var FontText *text.Atlas
-
 var last time.Time
 var dt float64
 
-var simulationSeed int64
-var simulationWarnSize int
-var simulationHops int
-var simulationCars int
-var simulationObstacles int
-var simulationTimeCounter int
+func main() {
+	pixelgl.Run(run)
+}
 
 func run() {
+	setupWindow()
+	Init()
+	for !mainWindow.Closed() {
+		//TODO: LERP CARS
+		handleButtons()
+		simulate()
+		mainWindow.Update()
+	}
+}
+
+func setupWindow() {
 	cfg := pixelgl.WindowConfig{
-		Title:  "Car2Car Simulation",
+		Title:  "Car2Car Hinderniswarnung Simulation",
 		Bounds: pixel.R(0, 0, sizeX, sizeY),
-		VSync:  false,
+		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
 		panic(err)
 	}
 	mainWindow = win
-	Init()
-
-	last = time.Now()
-	dt = 0.5
-	for !win.Closed() {
-
-		handleButtons()
-		handleSimulation()
-
-		//TODO: LERP CARS
-		win.Update()
-	}
 }
 
-func handleSimulation() {
+func simulate() {
 
 	dt = dt + time.Since(last).Seconds()
 	last = time.Now()
@@ -85,34 +65,16 @@ func updateWifi() {
 	renderGUI()
 }
 
-func handleButtons() {
-	if mainWindow.JustPressed(pixelgl.MouseButtonLeft) {
-		buttonPress()
-	}
-}
-
-func SetupFonts() {
-	header, err := loadTTF("assets/font/Poppins-Regular.ttf", 22)
-	if err != nil {
-		panic(err)
-	}
-	textF, err := loadTTF("assets/font/Roboto-Regular.ttf", 14)
-	if err != nil {
-		panic(err)
-	}
-	FontHeader = text.NewAtlas(header, text.ASCII)
-	FontText = text.NewAtlas(textF, text.ASCII)
-}
-
 func Init() {
+	setupFlags()
 	SetupFonts()
 	guiBase = pixel.V(930, 0)
 	mainWindow.Clear(colornames.Lightgray)
 	mainWindow.SetSmooth(true)
 	streetMap = NewMap(30, 30.5)
-	streetMap.addStreets()
-	streetMap.addObstacles(simulationObstacles, 500)
-	streetMap.addCars(simulationCars, 3000)
+	streetMap.init()
+	last = time.Now()
+	dt = 0.5
 }
 
 func update() {
@@ -122,93 +84,4 @@ func update() {
 	streetMap.RenderCars()
 	renderButtons()
 	renderGUI()
-}
-
-func renderGUI() {
-	//var spacing float64 = 20
-	var center = guiBase.Add(pixel.V(160, 900))
-	basicTxt := text.New(center, FontHeader)
-	basicTxt.Color = colornames.Black
-	fmt.Fprintln(basicTxt, "Cars")
-	basicTxt.Draw(mainWindow, pixel.IM)
-
-	carTxt := text.New(center.Add(pixel.V(-150, -30)), FontText)
-	carTxt.LineHeight = FontText.LineHeight() * 1.5
-	carTxt.Color = colornames.Black
-
-	var carIDs = []string{""}
-	for _, line := range streetMap.cars {
-
-		txt := line.id + ": [X:" + strconv.FormatInt(int64(line.x), 10) + "|Y:" + strconv.FormatInt(int64(line.y), 10) + "] "
-		txt = txt + "Direction: " + line.direction.toString()
-
-		carIDs = append(carIDs, txt)
-	}
-
-	for _, line := range carIDs {
-		fmt.Fprintln(carTxt, line)
-	}
-
-	carTxt.Draw(mainWindow, pixel.IM)
-
-}
-
-func renderButtons() {
-	var sFaster = LoadAndSprite("assets/bFaster.png")
-	var sSlower = LoadAndSprite("assets/bSlower.png")
-	mat := pixel.IM
-	loc := pixel.V(1000, 50)
-	mat = mat.Moved(loc)
-
-	sSlower.Draw(mainWindow, mat)
-	slower = sSlower.Frame().Moved(loc)
-	mat = mat.Moved(pixel.V(45, 0))
-	sFaster.Draw(mainWindow, mat)
-	faster = sFaster.Frame().Moved(pixel.V(1045, 50))
-
-	basicTxt := text.New(loc.Add(pixel.V(70, -7)), FontText)
-	basicTxt.Color = colornames.Black
-	fmt.Fprintln(basicTxt, "Delay: "+strconv.FormatFloat(speed, 'f', 1, 32)+"s.")
-	basicTxt.Draw(mainWindow, pixel.IM)
-
-}
-
-func buttonPress() {
-
-	if faster.Contains(mainWindow.MousePosition()) {
-		if speed > 0.1 {
-			speed -= 0.1
-		}
-		fmt.Println("Faster, delay: " + strconv.FormatFloat(speed, 'f', 1, 32) + "s.")
-	}
-	if slower.Contains(mainWindow.MousePosition()) {
-		speed += 0.1
-		fmt.Println("Slower, delay: " + strconv.FormatFloat(speed, 'f', 1, 32) + "s.")
-	}
-}
-
-func main() {
-
-	setupFlags()
-
-	pixelgl.Run(run)
-}
-
-func setupFlags() {
-
-	seedPtr := flag.Int64("seed", time.Now().UnixNano(), "int64 simulation seed")
-	warnPtr := flag.Int("size", 4, "int warnSize")
-	hopPtr := flag.Int("hops", 5, "int hops")
-	carsPtr := flag.Int("cars", 20, "int cars")
-	obstPtr := flag.Int("obstacles", 1, "int obstacles")
-	timePtr := flag.Int("time", 1, "int timeCounter")
-
-	flag.Parse()
-
-	simulationSeed = *seedPtr
-	simulationHops = *hopPtr
-	simulationWarnSize = *warnPtr
-	simulationCars = *carsPtr
-	simulationObstacles = *obstPtr
-	simulationTimeCounter = *timePtr
 }

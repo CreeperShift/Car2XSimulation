@@ -34,6 +34,7 @@ var simulationWarnSize int
 var simulationHops int
 var simulationCars int
 var simulationObstacles int
+var simulationTimeCounter int
 
 func run() {
 	cfg := pixelgl.WindowConfig{
@@ -110,8 +111,8 @@ func Init() {
 	mainWindow.SetSmooth(true)
 	streetMap = NewMap(30, 30.5)
 	streetMap.addStreets()
-	streetMap.addObstacles(simulationObstacles, 50)
-	streetMap.addCars(simulationCars, 300)
+	streetMap.addObstacles(simulationObstacles, 500)
+	streetMap.addCars(simulationCars, 3000)
 }
 
 func update() {
@@ -196,10 +197,11 @@ func main() {
 func setupFlags() {
 
 	seedPtr := flag.Int64("seed", time.Now().UnixNano(), "int64 simulation seed")
-	warnPtr := flag.Int("size", 5, "int warnSize")
-	hopPtr := flag.Int("hops", 6, "int hops")
+	warnPtr := flag.Int("size", 4, "int warnSize")
+	hopPtr := flag.Int("hops", 5, "int hops")
 	carsPtr := flag.Int("cars", 20, "int cars")
 	obstPtr := flag.Int("obstacles", 1, "int obstacles")
+	timePtr := flag.Int("time", 1, "int timeCounter")
 
 	flag.Parse()
 
@@ -208,4 +210,5 @@ func setupFlags() {
 	simulationWarnSize = *warnPtr
 	simulationCars = *carsPtr
 	simulationObstacles = *obstPtr
+	simulationTimeCounter = *timePtr
 }

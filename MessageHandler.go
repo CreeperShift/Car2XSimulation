@@ -11,6 +11,8 @@ type ActiveMessage struct {
 	message     Message
 }
 
+//TODO: Fix message propagation
+
 func NewActiveMessage(car Car, message Message) *ActiveMessage {
 	return &ActiveMessage{locX: float64(car.x), locY: float64(car.y), message: message, currentSize: 1}
 }

@@ -106,22 +106,18 @@ func NewMap(size int, tilesize float64) *StreetMap {
 }
 
 func (m *StreetMap) addStreets() {
-	//TODO: improve algo
 	m.tiles = divideSlice(m.tiles, 2)
 	m.tiles = setCorrectStreetTile(m.tiles)
 }
 
 func divideSlice(slice [][]Tile, rec int) [][]Tile {
 
-	if len(slice) == 0 {
+	if len(slice) <= 1 {
 		rec = 0
 		return slice
 	}
-
-	maxX := rand.Intn(len(slice))
-	maxY := rand.Intn(len(slice))
-
-	//TODO: Prevent 2 streets next to each other
+	maxX := rand.Intn(len(slice)-1) + 1
+	maxY := rand.Intn(len(slice)-1) + 1
 
 	for x := range slice {
 		for y := range slice[x] {
@@ -137,7 +133,7 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 
 	if rec > 0 {
 		rec--
-		divideSlice(slice[0:maxX][0:maxY], rec)
+		divideSlice(slice[1:maxX][1:maxY], rec)
 	}
 
 	return slice

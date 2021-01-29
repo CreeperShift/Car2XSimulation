@@ -21,7 +21,6 @@ func run() {
 	setupWindow()
 	Init()
 	for !mainWindow.Closed() {
-		//TODO: LERP CARS
 		handleButtons()
 		simulate()
 		mainWindow.Update()

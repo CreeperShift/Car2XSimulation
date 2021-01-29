@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -27,6 +28,12 @@ var FontText *text.Atlas
 
 var last time.Time
 var dt float64
+
+var simulationSeed int64
+var simulationWarnSize int
+var simulationHops int
+var simulationCars int
+var simulationObstacles int
 
 func run() {
 	cfg := pixelgl.WindowConfig{
@@ -103,8 +110,8 @@ func Init() {
 	mainWindow.SetSmooth(true)
 	streetMap = NewMap(30, 30.5)
 	streetMap.addStreets()
-	streetMap.addObstacles(1, 50)
-	streetMap.addCars(10, 300)
+	streetMap.addObstacles(simulationObstacles, 50)
+	streetMap.addCars(simulationCars, 300)
 }
 
 func update() {
@@ -180,5 +187,25 @@ func buttonPress() {
 }
 
 func main() {
+
+	setupFlags()
+
 	pixelgl.Run(run)
+}
+
+func setupFlags() {
+
+	seedPtr := flag.Int64("seed", time.Now().UnixNano(), "int64 simulation seed")
+	warnPtr := flag.Int("size", 5, "int warnSize")
+	hopPtr := flag.Int("hops", 6, "int hops")
+	carsPtr := flag.Int("cars", 20, "int cars")
+	obstPtr := flag.Int("obstacles", 1, "int obstacles")
+
+	flag.Parse()
+
+	simulationSeed = *seedPtr
+	simulationHops = *hopPtr
+	simulationWarnSize = *warnPtr
+	simulationCars = *carsPtr
+	simulationObstacles = *obstPtr
 }

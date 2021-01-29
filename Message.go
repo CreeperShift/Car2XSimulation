@@ -18,10 +18,10 @@ func NewMessage(car Car) (m *Message) {
 	m.locX = car.x
 	m.locY = car.y
 	m.messageCode = streetMap.tiles[car.x][car.y].obstacleType
-	m.hopCounter = 2
-	m.warnSize = 3
+	m.hopCounter = simulationHops
+	m.warnSize = float64(simulationWarnSize)
 	m.messageID = messageIDs
-	m.timeCounter = 10
+	m.timeCounter = 1
 
 	return m
 }

@@ -119,7 +119,7 @@ func (m *StreetMap) addStreets() {
 }
 
 func divideSlice(slice [][]Tile, rec int) [][]Tile {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(simulationSeed)
 
 	if len(slice) == 0 {
 		rec = 0
@@ -145,7 +145,6 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 
 	if rec > 0 {
 		rec--
-		//rec--
 		divideSlice(slice[0:maxX][0:maxY], rec)
 	}
 

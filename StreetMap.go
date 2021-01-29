@@ -38,9 +38,8 @@ func (m *StreetMap) addCars(amount, tries int) {
 			randX := rand.Intn(streetMap.size)
 			randY := rand.Intn(streetMap.size)
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
-				tex := rand.Intn(len(CarSprites))
 				mes := make([]Message, 0)
-				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), direction: UP, sprite: CarSprites[tex], ReceivedMessages: mes}
+				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), direction: UP, ReceivedMessages: mes}
 				m.cars = append(m.cars, car)
 				break
 			}

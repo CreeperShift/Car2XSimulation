@@ -15,12 +15,11 @@ type Car struct {
 	x, y             int
 	id               string
 	direction        Move
-	sprite           *pixel.Sprite
 	status           string
 	ReceivedMessages []Message
 }
 
-var CarSprites = []*pixel.Sprite{LoadAndSprite("assets/car1.png"), LoadAndSprite("assets/car2.png"), LoadAndSprite("assets/car3.png"), LoadAndSprite("assets/car4.png")}
+var carSprite = LoadAndSprite("assets/car4.png")
 
 func (car Car) RenderCar() {
 
@@ -29,8 +28,7 @@ func (car Car) RenderCar() {
 	mat = mat.Rotated(pixel.V(streetMap.tiles[car.x][car.y].x, streetMap.tiles[car.x][car.y].y), rotateDirection(car.direction))
 
 	mat = moveToLane(mat, car)
-
-	car.sprite.Draw(mainWindow, mat)
+	carSprite.Draw(mainWindow, mat)
 }
 
 func moveToLane(mat pixel.Matrix, car Car) pixel.Matrix {

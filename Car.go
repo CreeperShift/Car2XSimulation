@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/faiface/pixel"
 	"math"
 	"math/rand"
-	"strconv"
 )
 
 type Move struct {
@@ -149,21 +147,16 @@ func (car *Car) receiveMessage(message Message) {
 
 	for _, f := range car.ReceivedMessages {
 
-		fmt.Println("message ids: " + strconv.Itoa(int(f.messageID)))
-
 		if f.messageID == message.messageID {
 			return
 		}
 	}
 
-	fmt.Println(message)
 	car.ReceivedMessages = append(car.ReceivedMessages, &message)
 
 	if message.hopCounter > 0 {
 		newMessage := message
 		newMessage.hopCounter--
-
-		fmt.Println("Sending new message from car : " + car.id + " and messageID was " + strconv.Itoa(int(message.messageID)))
 
 		var newActiveMessage = NewActiveMessage(*car, newMessage)
 		queue(*newActiveMessage)

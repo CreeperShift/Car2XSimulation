@@ -46,7 +46,7 @@ func simulate() {
 	last = time.Now()
 	if dt > speed {
 		dt = 0.0
-		if len(GetMessages()) == 0 {
+		if len(messageQueue) == 0 && currentActiveMessage == nil {
 			update()
 		} else {
 			updateWifi()

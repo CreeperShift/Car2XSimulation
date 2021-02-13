@@ -128,59 +128,46 @@ func (car *Car) addDir(m Move) {
 	car.x = car.x + m.x
 	car.y = car.y + m.y
 
+	/*
+		Car hits obstacle FOR THE FIRST TIME
+	*/
 	if streetMap.tiles[car.x][car.y].obstacle {
 		message := NewActiveMessage(*car, *NewMessage(*car))
-		AddMessage(*message)
-		car.receiveMessage(message.message)
+		queue(*message)
+		car.ReceivedMessages = append(car.ReceivedMessages, message.message)
 	}
 
 	car.direction = m
 }
 
 func (car *Car) update() {
-	car.checkMessages()
 	car.MoveCar()
-
 }
 
 func (car *Car) receiveMessage(message Message) {
 
-	fmt.Println("rec")
+	wasEq := false
 
 	for _, f := range car.ReceivedMessages {
 		if message.isEqual(f) {
-			fmt.Println("was equal")
-			return
-		}
-	}
-	car.ReceivedMessages = append(car.ReceivedMessages, message)
-	fmt.Println(car.ReceivedMessages)
-	car.checkMessages()
-}
-
-func (car *Car) checkMessages() {
-
-	cleanedMessages := make([]Message, 0)
-
-	for _, f := range car.ReceivedMessages {
-		if f.timeCounter > 0 {
-			f.timeCounter--
-			cleanedMessages = append(cleanedMessages, f)
+			wasEq = true
+			break
 		}
 	}
 
-	for _, f := range cleanedMessages {
+	if !wasEq {
+		car.ReceivedMessages = append(car.ReceivedMessages, message)
 
-		if f.hopCounter > 0 {
-			newMessage := f
+		if message.hopCounter > 0 {
+			newMessage := message
 			newMessage.hopCounter--
 			var newActiveMessage = NewActiveMessage(*car, newMessage)
-			fmt.Println("sent new mesg")
-			futureInstance = append(futureInstance, newActiveMessage)
-			fmt.Println(futureInstance)
+			queue(*newActiveMessage)
 		}
+	} else {
+		fmt.Println("Skipping Car as message was already known")
 	}
-	car.ReceivedMessages = cleanedMessages
+
 }
 
 func isInside(car Car, f int, mov []Move) bool {

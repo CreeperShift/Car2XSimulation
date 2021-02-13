@@ -32,6 +32,10 @@ func setupFlags() {
 
 	rand.Seed(simulationSeed)
 
+	/*
+		test seed = 1613245660739974700
+	*/
+
 	fmt.Println("Seed is: " + strconv.FormatInt(simulationSeed, 10))
 
 }

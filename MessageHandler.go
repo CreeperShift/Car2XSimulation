@@ -11,21 +11,21 @@ type ActiveMessage struct {
 	message     Message
 }
 
-//TODO: Fix message propagation
-
 func NewActiveMessage(car Car, message Message) *ActiveMessage {
 	return &ActiveMessage{locX: float64(car.x), locY: float64(car.y), message: message, currentSize: 1}
 }
 
 func (m *ActiveMessage) update() {
-
 	cars := getCarsInArea(m.locX, m.locY, m.currentSize)
-
-	for _, c := range cars {
-		c.receiveMessage(m.message)
+	if m.currentSize >= m.message.warnSize {
+		for _, c := range cars {
+			c.receiveMessage(m.message)
+		}
 	}
 	m.currentSize++
 }
+
+var currentActiveMessage *ActiveMessage
 
 func getCarsInArea(locX, locY float64, size float64) (cars []*Car) {
 
@@ -64,44 +64,29 @@ func getCarsInArea(locX, locY float64, size float64) (cars []*Car) {
 type ActiveMessages []*ActiveMessage
 
 var (
-	instance       ActiveMessages
-	futureInstance ActiveMessages
+	messageQueue ActiveMessages
 )
 
-func GetMessages() []*ActiveMessage {
-
-	if instance == nil {
-		instance = make(ActiveMessages, 0)
-	}
-	return instance
-}
-
-func AddMessage(message ActiveMessage) {
-	var oldMessages = GetMessages()
-	instance = append(oldMessages, &message)
+func queue(message ActiveMessage) {
+	messageQueue = append(messageQueue, &message)
 }
 
 func updateMessages() {
 
-	instance = cleanInstance()
+	if currentActiveMessage == nil {
+		if len(messageQueue) > 0 {
+			currentActiveMessage = messageQueue[0]
+			messageQueue = messageQueue[1:]
+			fmt.Println("prune messages")
 
-	for _, f := range instance {
-		f.update()
-	}
-
-	fmt.Println(futureInstance)
-
-	instance = append(instance, futureInstance...)
-	futureInstance = make(ActiveMessages, 0)
-}
-
-func cleanInstance() ActiveMessages {
-	cleanedInstance := make(ActiveMessages, 0)
-
-	for _, f := range instance {
-		if f.currentSize < f.message.warnSize {
-			cleanedInstance = append(cleanedInstance, f)
+		} else {
+			return
 		}
 	}
-	return cleanedInstance
+	if currentActiveMessage.currentSize <= currentActiveMessage.message.warnSize {
+		currentActiveMessage.update()
+	} else {
+		currentActiveMessage = nil
+	}
+
 }

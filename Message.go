@@ -21,7 +21,6 @@ func NewMessage(car Car) (m *Message) {
 	m.hopCounter = simulationHops
 	m.warnSize = float64(simulationWarnSize)
 	m.messageID = messageIDs
-	m.timeCounter = float64(simulationTimeCounter)
 
 	return m
 }

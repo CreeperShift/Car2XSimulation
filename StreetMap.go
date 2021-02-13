@@ -9,7 +9,7 @@ type StreetMap struct {
 	size      int
 	tileSize  float64
 	tiles     [][]Tile
-	cars      []Car
+	cars      []*Car
 	obstacles []Obstacle
 }
 
@@ -36,9 +36,8 @@ func (m *StreetMap) addCars(amount, tries int) {
 			randX := rand.Intn(streetMap.size)
 			randY := rand.Intn(streetMap.size)
 			if m.tiles[randX][randY].tileType > 0 && !m.tiles[randX][randY].obstacle {
-				mes := make([]Message, 0)
-				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), direction: UP, ReceivedMessages: mes}
-				m.cars = append(m.cars, car)
+				car := Car{x: randX, y: randY, id: "Car_" + strconv.FormatInt(int64(count), 10), direction: UP}
+				m.cars = append(m.cars, &car)
 				break
 			}
 		}
@@ -201,7 +200,7 @@ func (m StreetMap) RenderCars() {
 func (m *StreetMap) getCarByLocation(x, y int) (bool, *Car) {
 	for _, c := range m.cars {
 		if c.x == x && c.y == y {
-			return true, &c
+			return true, c
 		}
 	}
 	return false, nil

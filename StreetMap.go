@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"strconv"
 )
@@ -119,8 +118,6 @@ func divideSlice(slice [][]Tile, rec int) [][]Tile {
 
 	maxX := rand.Intn((len(slice)-1)/2+1)*2 + 1
 	maxY := rand.Intn((len(slice)-1)/2+1)*2 + 1
-
-	fmt.Println("maxX:" + strconv.Itoa(maxX) + " maxY: " + strconv.Itoa(maxY))
 
 	for x := range slice {
 		for y := range slice[x] {

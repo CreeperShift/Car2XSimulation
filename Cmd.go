@@ -20,7 +20,7 @@ func setupFlags() {
 	hopPtr := flag.Int("hops", 5, "int hops")
 	carsPtr := flag.Int("cars", 20, "int cars")
 	obstPtr := flag.Int("obstacles", 1, "int obstacles")
-	timePtr := flag.Int("time", 1, "int timeCounter")
+	timePtr := flag.Int("time", 3, "int timeCounter")
 
 	flag.Parse()
 

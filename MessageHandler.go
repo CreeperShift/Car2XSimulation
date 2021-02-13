@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/faiface/pixel"
 )
 
@@ -76,6 +77,8 @@ func updateMessages() {
 		if len(messageQueue) > 0 {
 			currentActiveMessage = messageQueue[0]
 			messageQueue = messageQueue[1:]
+			fmt.Println("prune messages")
+
 		} else {
 			return
 		}

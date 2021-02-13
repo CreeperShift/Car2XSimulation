@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/faiface/pixel"
 	"math"
 	"math/rand"
@@ -15,7 +16,7 @@ type Car struct {
 	id               string
 	direction        Move
 	status           string
-	ReceivedMessages []*Message
+	ReceivedMessages []Message
 }
 
 var carSprite = LoadAndSprite("assets/car4.png")
@@ -133,7 +134,7 @@ func (car *Car) addDir(m Move) {
 	if streetMap.tiles[car.x][car.y].obstacle {
 		message := NewActiveMessage(*car, *NewMessage(*car))
 		queue(*message)
-		car.ReceivedMessages = append(car.ReceivedMessages, &message.message)
+		car.ReceivedMessages = append(car.ReceivedMessages, message.message)
 	}
 
 	car.direction = m
@@ -145,21 +146,26 @@ func (car *Car) update() {
 
 func (car *Car) receiveMessage(message Message) {
 
-	for _, f := range car.ReceivedMessages {
+	wasEq := false
 
-		if f.messageID == message.messageID {
-			return
+	for _, f := range car.ReceivedMessages {
+		if message.isEqual(f) {
+			wasEq = true
+			break
 		}
 	}
 
-	car.ReceivedMessages = append(car.ReceivedMessages, &message)
+	if !wasEq {
+		car.ReceivedMessages = append(car.ReceivedMessages, message)
 
-	if message.hopCounter > 0 {
-		newMessage := message
-		newMessage.hopCounter--
-
-		var newActiveMessage = NewActiveMessage(*car, newMessage)
-		queue(*newActiveMessage)
+		if message.hopCounter > 0 {
+			newMessage := message
+			newMessage.hopCounter--
+			var newActiveMessage = NewActiveMessage(*car, newMessage)
+			queue(*newActiveMessage)
+		}
+	} else {
+		fmt.Println("Skipping Car as message was already known")
 	}
 
 }

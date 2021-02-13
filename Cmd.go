@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -13,14 +11,16 @@ var simulationWarnSize int
 var simulationHops int
 var simulationCars int
 var simulationObstacles int
+var simulationTimeCounter int
 
 func setupFlags() {
 
 	seedPtr := flag.Int64("seed", time.Now().UnixNano(), "int64 simulation seed")
-	warnPtr := flag.Int("size", 2, "int warnSize")
+	warnPtr := flag.Int("size", 4, "int warnSize")
 	hopPtr := flag.Int("hops", 5, "int hops")
-	carsPtr := flag.Int("cars", 30, "int cars")
+	carsPtr := flag.Int("cars", 20, "int cars")
 	obstPtr := flag.Int("obstacles", 1, "int obstacles")
+	timePtr := flag.Int("time", 3, "int timeCounter")
 
 	flag.Parse()
 
@@ -29,13 +29,7 @@ func setupFlags() {
 	simulationWarnSize = *warnPtr
 	simulationCars = *carsPtr
 	simulationObstacles = *obstPtr
+	simulationTimeCounter = *timePtr
 
 	rand.Seed(simulationSeed)
-
-	/*
-		test seed = 1613245660739974700
-	*/
-
-	fmt.Println("Seed is: " + strconv.FormatInt(simulationSeed, 10))
-
 }
